@@ -26,14 +26,27 @@ $(document).ready( function () {
     var itemPrice = parseFloat(itemPriceString);
     var totalPriceString = $('#total_cost')[0];
     // debugger;
-    if (totalPriceString.innerHTML === '')
-      totalPriceString.innerHTML = itemPrice;
+    if (totalPriceString.innerHTML === '') {
+      var cleanedPrice = unfunkifyPrice(itemPrice);
+      totalPriceString.innerHTML = cleanedPrice;
+    }
     else {
       var totalPrice = parseFloat(totalPriceString.innerHTML) + itemPrice;
-      totalPriceString.innerHTML = totalPrice;
+      var cleanedPrice = unfunkifyPrice(totalPrice);
+      totalPriceString.innerHTML = cleanedPrice;
     }
-
   }
 
-
+  var unfunkifyPrice = function (priceToFix) {
+    var stringPrice = priceToFix.toString();
+    var splitPrice = stringPrice.split('.');
+    if (splitPrice.length === 1)
+      return splitPrice[0] + '.00'
+    else if (splitPrice[1].length === 1)
+      return splitPrice.join('.') + '0';
+    else if (splitPrice[1].length > 2)
+      return splitPrice[0] + '.' + splitPrice[1].slice(0, 2);
+    else
+      return priceToFix;
+  }
 });
