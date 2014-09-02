@@ -22,15 +22,17 @@ $(document).ready( function () {
 
 
   var updateTotalPrice = function(itemInfo){
-    var itemPrice = itemInfo.draggable.context.innerText.split(/\s/).slice(-1)[0];
-    var totalPrice = $('#total_cost')[0];
-    debugger;
-    if (totalPrice.innerHTML === '')
-      totalPrice.innerHTML = '$' + itemPrice;
+    var itemPriceString = itemInfo.draggable.context.innerText.split(/\s/).slice(-1)[0];
+    var itemPrice = parseFloat(itemPriceString);
+    var totalPriceString = $('#total_cost')[0];
+    // debugger;
+    if (totalPriceString.innerHTML === '')
+      totalPriceString.innerHTML = itemPrice;
     else {
-
+      var totalPrice = parseFloat(totalPriceString.innerHTML) + itemPrice;
+      totalPriceString.innerHTML = totalPrice;
     }
-    //on drop? on mouse release? itemPrice+totalPrice
+
   }
 
 
