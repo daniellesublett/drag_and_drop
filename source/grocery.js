@@ -5,27 +5,13 @@
  */
 $(document).ready( function () {
 
-  $('.item').draggable( {
-    helper: 'clone'
-  });
-
-  $('#grocery_list').droppable({
-    accept: '.item',
-    drop: function (event, ui) {
-      var itemTargetId = event.target.id;
-      var thingDragged = ui.draggable.context.outerHTML;
-      $('#' + itemTargetId).append(thingDragged);
-      updateTotalPrice(ui);
-    }
-  });
-
+  new GroceryList.Controller('#grocery_list', '.item', new GroceryList.View)
 
 
   var updateTotalPrice = function(itemInfo){
     var itemPriceString = itemInfo.draggable.context.innerText.split(/\s/).slice(-1)[0];
     var itemPrice = parseFloat(itemPriceString);
     var totalPriceString = $('#total_cost')[0];
-    // debugger;
     if (totalPriceString.innerHTML === '') {
       var cleanedPrice = unfunkifyPrice(itemPrice);
       totalPriceString.innerHTML = cleanedPrice;
@@ -50,3 +36,52 @@ $(document).ready( function () {
       return priceToFix;
   }
 });
+
+GroceryList = {};
+
+GroceryList.Controller = function (dropSelector, dragSelector, view) {
+  this.dropSelector = dropSelector;
+  this.dragSelector = dragSelector;
+  this.view = view;
+
+  this.draggableItemListeners();
+  this.droppableItemListeners();
+};
+
+GroceryList.Controller.prototype = {
+  draggableItemListeners: function () {
+   $(this.dragSelector).draggable({
+      helper: 'clone'
+    });
+  },
+
+  droppableItemListeners: function () {
+    $(this.dropSelector).droppable({
+      accept: '.item',
+      drop: function (event, ui) {
+        var itemTargetId = event.target.id;
+        var thingDragged = ui.draggable.context.outerHTML;
+        $('#' + itemTargetId).append(thingDragged);
+        // updateTotalPrice(ui);
+      }
+    });
+  }
+};
+
+/*
+
+
+
+
+
+*/
+
+
+GroceryList.View = function () {
+};
+
+GroceryList.View.prototype = {
+  updatePrice: function (newPrice) {
+    console.log(newPrice)
+  }
+}
