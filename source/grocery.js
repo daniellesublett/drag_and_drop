@@ -34,12 +34,6 @@ GroceryList.Controller.prototype = {
     });
   },
 
-  dropFunction: function (event, ui) {
-    var thingDragged = ui.draggable.context.outerHTML;
-    $(this.dropSelector).append(thingDragged);
-    this.updateTotalPrice(ui);
-  },
-
   droppableItemListeners: function () {
     $(this.dropSelector).droppable({
       accept: this.dragSelector,
@@ -47,21 +41,26 @@ GroceryList.Controller.prototype = {
     });
   },
 
-  updateTotalPrice: function(itemInfo){
-    var itemPriceString = itemInfo.draggable.context.innerText.split(/\s/).slice(-1)[0];
-    var itemPrice = parseFloat(itemPriceString);
-    var totalPriceString = $(this.totalSelector)[0];
-    if (totalPriceString.innerHTML === '') {
-      var cleanedPrice = this.model.unfunkifyPrice(itemPrice);
-      this.view.updatePrice(cleanedPrice, totalPriceString);
-    }
-    else {
-      var totalPrice = parseFloat(totalPriceString.innerHTML) + itemPrice;
-      var cleanedPrice = this.model.unfunkifyPrice(totalPrice);
-      this.view.updatePrice(cleanedPrice, totalPriceString);
-    }
+  dropFunction: function (event, ui) {
+    var thingDragged = ui.draggable.context.outerHTML;
+    $(this.dropSelector).append(thingDragged);
+    this.updateTotalPrice(ui);
   },
 
+  updateTotalPrice: function(itemInfo){
+    var itemPriceString = itemInfo.draggable.find('.item_price').html();
+    var itemPrice = parseFloat(itemPriceString);
+    var totalPriceString = $(this.totalSelector).html();
+    if (totalPriceString === '') {
+      var cleanedPrice = this.model.unfunkifyPrice(itemPrice);
+      this.view.updatePrice(cleanedPrice, this.totalSelector);
+    }
+    else {
+      var totalPrice = parseFloat(totalPriceString) + itemPrice;
+      var cleanedPrice = this.model.unfunkifyPrice(totalPrice);
+      this.view.updatePrice(cleanedPrice, this.totalSelector);
+    }
+  }
 };
 
 GroceryList.Model = function() {
@@ -71,14 +70,13 @@ GroceryList.Model.prototype = {
   unfunkifyPrice: function (priceToFix) {
     return priceToFix.toFixed(2);
   }
-
 }
 
 GroceryList.View = function () {
 };
 
 GroceryList.View.prototype = {
-  updatePrice: function (newPrice, elemToManipulate) {
-    elemToManipulate.innerHTML = newPrice;
+  updatePrice: function (newPrice, totalSelector) {
+    $(totalSelector)[0].innerHTML = newPrice;
   }
 }
