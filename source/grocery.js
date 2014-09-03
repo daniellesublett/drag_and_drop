@@ -4,17 +4,21 @@
  * How do your objects interact with their respective DOM elements?
  */
 $(document).ready( function () {
-
-  new GroceryList.Controller('#grocery_list', '.item', '#total_cost', new GroceryList.View())
+  var opts = {
+    dropSelector: '#grocery_list',
+    dragSelector: '.item',
+    totalSelector: '#total_cost'
+  }
+  new GroceryList.Controller(new GroceryList.View(), opts)
 
 });
 
 GroceryList = {};
 
-GroceryList.Controller = function (dropSelector, dragSelector, totalSelector, view) {
-  this.dropSelector = dropSelector;
-  this.dragSelector = dragSelector;
-  this.totalSelector = totalSelector;
+GroceryList.Controller = function (view, selectors) {
+  this.dropSelector = selectors.dropSelector;
+  this.dragSelector = selectors.dragSelector;
+  this.totalSelector = selectors.totalSelector;
   this.view = view;
   this.model = new GroceryList.Model();
 
