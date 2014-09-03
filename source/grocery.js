@@ -20,8 +20,6 @@ GroceryList.Controller = function (view, selectors) {
   this.dragSelector = selectors.dragSelector;
   this.totalSelector = selectors.totalSelector;
   this.view = view;
-  this.model = new GroceryList.Model();
-
 
   this.draggableItemListeners();
   this.droppableItemListeners();
@@ -51,26 +49,15 @@ GroceryList.Controller.prototype = {
     var itemPriceString = itemInfo.draggable.find('.item_price').html();
     var itemPrice = parseFloat(itemPriceString);
     var totalPriceString = $(this.totalSelector).html();
-    if (totalPriceString === '') {
-      var cleanedPrice = this.model.unfunkifyPrice(itemPrice);
-      this.view.updatePrice(cleanedPrice, this.totalSelector);
-    }
+
+    if (totalPriceString === '')
+      this.view.updatePrice(itemPrice.toFixed(2), this.totalSelector);
     else {
       var totalPrice = parseFloat(totalPriceString) + itemPrice;
-      var cleanedPrice = this.model.unfunkifyPrice(totalPrice);
-      this.view.updatePrice(cleanedPrice, this.totalSelector);
+      this.view.updatePrice(totalPrice.toFixed(2), this.totalSelector);
     }
   }
 };
-
-GroceryList.Model = function() {
-};
-
-GroceryList.Model.prototype = {
-  unfunkifyPrice: function (priceToFix) {
-    return priceToFix.toFixed(2);
-  }
-}
 
 GroceryList.View = function () {
 };
