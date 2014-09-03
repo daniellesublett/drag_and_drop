@@ -65,21 +65,11 @@ GroceryList.Controller.prototype = {
 };
 
 GroceryList.Model = function() {
-
 };
 
 GroceryList.Model.prototype = {
   unfunkifyPrice: function (priceToFix) {
-    var stringPrice = priceToFix.toString();
-    var splitPrice = stringPrice.split('.');
-    if (splitPrice.length === 1)
-      return splitPrice[0] + '.00'
-    else if (splitPrice[1].length === 1)
-      return splitPrice.join('.') + '0';
-    else if (splitPrice[1].length > 2)
-      return splitPrice[0] + '.' + splitPrice[1].slice(0, 2);
-    else
-      return priceToFix;
+    return priceToFix.toFixed(2);
   }
 
 }
