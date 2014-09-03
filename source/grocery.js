@@ -5,15 +5,16 @@
  */
 $(document).ready( function () {
 
-  new GroceryList.Controller('#grocery_list', '.item', new GroceryList.View())
+  new GroceryList.Controller('#grocery_list', '.item', '#total_cost', new GroceryList.View())
 
 });
 
 GroceryList = {};
 
-GroceryList.Controller = function (dropSelector, dragSelector, view) {
+GroceryList.Controller = function (dropSelector, dragSelector, totalSelector, view) {
   this.dropSelector = dropSelector;
   this.dragSelector = dragSelector;
+  this.totalSelector = totalSelector;
   this.view = view;
   this.model = new GroceryList.Model();
 
@@ -30,15 +31,14 @@ GroceryList.Controller.prototype = {
   },
 
   dropFunction: function (event, ui) {
-    var itemTargetId = event.target.id;
     var thingDragged = ui.draggable.context.outerHTML;
-    $('#' + itemTargetId).append(thingDragged);
+    $(this.dropSelector).append(thingDragged);
     this.updateTotalPrice(ui);
   },
 
   droppableItemListeners: function () {
     $(this.dropSelector).droppable({
-      accept: '.item',
+      accept: this.dragSelector,
       drop: this.dropFunction.bind(this)
     });
   },
@@ -46,15 +46,15 @@ GroceryList.Controller.prototype = {
   updateTotalPrice: function(itemInfo){
     var itemPriceString = itemInfo.draggable.context.innerText.split(/\s/).slice(-1)[0];
     var itemPrice = parseFloat(itemPriceString);
-    var totalPriceString = $('#total_cost')[0];
+    var totalPriceString = $(this.totalSelector)[0];
     if (totalPriceString.innerHTML === '') {
       var cleanedPrice = this.model.unfunkifyPrice(itemPrice);
-      totalPriceString.innerHTML = cleanedPrice;
+      this.view.updatePrice(cleanedPrice, totalPriceString);
     }
     else {
       var totalPrice = parseFloat(totalPriceString.innerHTML) + itemPrice;
       var cleanedPrice = this.model.unfunkifyPrice(totalPrice);
-      totalPriceString.innerHTML = cleanedPrice;
+      this.view.updatePrice(cleanedPrice, totalPriceString);
     }
   },
 
@@ -84,7 +84,7 @@ GroceryList.View = function () {
 };
 
 GroceryList.View.prototype = {
-  updatePrice: function (newPrice) {
-    console.log(newPrice)
+  updatePrice: function (newPrice, elemToManipulate) {
+    elemToManipulate.innerHTML = newPrice;
   }
 }
