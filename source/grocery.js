@@ -5,7 +5,7 @@
  */
 $(document).ready( function () {
 
-  new GroceryList.Controller('#grocery_list', '.item', new GroceryList.View)
+  new GroceryList.Controller('#grocery_list', '.item', new GroceryList.View())
 
 });
 
@@ -15,6 +15,8 @@ GroceryList.Controller = function (dropSelector, dragSelector, view) {
   this.dropSelector = dropSelector;
   this.dragSelector = dragSelector;
   this.view = view;
+  this.model = new GroceryList.Model();
+
 
   this.draggableItemListeners();
   this.droppableItemListeners();
@@ -45,18 +47,24 @@ GroceryList.Controller.prototype = {
     var itemPriceString = itemInfo.draggable.context.innerText.split(/\s/).slice(-1)[0];
     var itemPrice = parseFloat(itemPriceString);
     var totalPriceString = $('#total_cost')[0];
-    debugger;
     if (totalPriceString.innerHTML === '') {
-      var cleanedPrice = this.unfunkifyPrice(itemPrice);
+      var cleanedPrice = this.model.unfunkifyPrice(itemPrice);
       totalPriceString.innerHTML = cleanedPrice;
     }
     else {
       var totalPrice = parseFloat(totalPriceString.innerHTML) + itemPrice;
-      var cleanedPrice = this.unfunkifyPrice(totalPrice);
+      var cleanedPrice = this.model.unfunkifyPrice(totalPrice);
       totalPriceString.innerHTML = cleanedPrice;
     }
   },
 
+};
+
+GroceryList.Model = function() {
+
+};
+
+GroceryList.Model.prototype = {
   unfunkifyPrice: function (priceToFix) {
     var stringPrice = priceToFix.toString();
     var splitPrice = stringPrice.split('.');
@@ -69,12 +77,8 @@ GroceryList.Controller.prototype = {
     else
       return priceToFix;
   }
-};
 
-/*
-
-*/
-
+}
 
 GroceryList.View = function () {
 };
